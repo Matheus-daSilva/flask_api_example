@@ -26,6 +26,11 @@ def create_item(name):
     items[item_id] = item
     return item, 201
     
+@app.get("/item")
+def get_all_items():
+    return {"items": list(items.values())}
+
+
 @app.get("/store/<string:store_id>")
 def get_store(store_id):
     try:
