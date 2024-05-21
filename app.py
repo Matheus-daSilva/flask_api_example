@@ -29,8 +29,16 @@ def create_item(name):
            400,
            message="Bad request. Ensure 'price', 'store_id' and 'name' are included in the JSON payload.", 
         ) 
+
+    for item in item.values():
+        if (
+            item_data["name"] == item["name"]
+            and item_data["store_id"] == item["store_id"]
+        ):
+            abort(400, message=f"Item already exists.")
     if item_data["store_id"] not in stores:
         abort(404, message="Store not found")
+        
     item_id = uuid.uuid4().hex
     item = {**item_data, "id": item_id}
     items[item_id] = item
