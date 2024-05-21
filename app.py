@@ -20,6 +20,15 @@ def create_store():
 @app.post("/item")
 def create_item(name):
     item_data = request.get_json()
+    if (
+        "price" not in item_data or
+        "store_id" not in item_data or
+        "name" not in item_data
+    ):
+        abort(
+           400,
+           message="Bad request. Ensure 'price', 'store_id' and 'name' are included in the JSON payload.", 
+        ) 
     if item_data["store_id"] not in stores:
         abort(404, message="Store not found")
     item_id = uuid.uuid4().hex
