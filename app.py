@@ -12,7 +12,7 @@ def get_stores():
 @app.post("/store")
 def create_store():
     store_data = request.get_json()
-    store_id = uuid.uuid4.hex
+    store_id = uuid.uuid4().hex
     new_store = {**store_data, "id": store_id}
     stores[store_id] = new_store
     return new_store, 201
@@ -22,7 +22,7 @@ def create_item(name):
     item_data = request.get_json()
     if item_data["store_id"] not in stores:
         abort(404, message="Store not found")
-    item_id = uuid.uuid4.hex
+    item_id = uuid.uuid4().hex
     item = {**item_data, "id": item_id}
     items[item_id] = item
     return item, 201
