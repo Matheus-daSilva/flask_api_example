@@ -27,7 +27,7 @@ def create_store():
     return new_store, 201
 
 @app.post("/item")
-def create_item(name):
+def create_item():
     item_data = request.get_json()
     if (
         "price" not in item_data or
@@ -39,7 +39,7 @@ def create_item(name):
            message="Bad request. Ensure 'price', 'store_id' and 'name' are included in the JSON payload.", 
         ) 
 
-    for item in item.values():
+    for item in items.values():
         if (
             item_data["name"] == item["name"]
             and item_data["store_id"] == item["store_id"]
