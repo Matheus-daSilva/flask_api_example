@@ -20,3 +20,9 @@ class Store(MethodView):
             return {"message": "Store deleted"}
         except KeyError:
             abort(404, message="Store not found")
+
+
+@blp.route("/store")
+class StoreList(MethodView):
+    def get(self):
+        return  {"stores": stores}
