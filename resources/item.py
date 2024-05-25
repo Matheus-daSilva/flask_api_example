@@ -34,3 +34,8 @@ class Item(MethodView):
         except KeyError:
             abort(404, message="Item not found.")
 
+@blp.route("/item")
+class ItemList:
+    def get(self):
+        return {"items": list(items.values())}
+    
