@@ -9,6 +9,7 @@ app = Flask(__name__)
 def get_stores():
     return  {"stores": stores}
 
+
 @app.post("/store")
 def create_store():
     store_data = request.get_json()
@@ -25,6 +26,7 @@ def create_store():
     new_store = {**store_data, "id": store_id}
     stores[store_id] = new_store
     return new_store, 201
+
 
 @app.post("/item")
 def create_item():
@@ -53,6 +55,7 @@ def create_item():
     items[item_id] = item
     return item, 201
     
+
 @app.get("/item")
 def get_all_items():
     return {"items": list(items.values())}
@@ -65,12 +68,14 @@ def get_store(store_id):
     except KeyError:
         abort(404, message="Store not found")
 
+
 @app.get("/item/<string:item_id>")
 def get_item_in_store(item_id):
     try:
         return items[item_id]
     except KeyError:
         abort(404, message="Store not found")
+
 
 @app.delete("/item/<string:item_id>")
 def delete_item(item_id):
@@ -79,6 +84,7 @@ def delete_item(item_id):
         return {"message": "Item deleted"}
     except KeyError:
         abort(404, message="Item not found.")
+
 
 @app.put("/item/<string:item_id>")
 def update_item(item_id):
