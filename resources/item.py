@@ -37,7 +37,7 @@ class Item(MethodView):
 
 
 @blp.route("/item")
-class ItemList:
+class ItemList(MethodView):
     def get(self):
         return {"items": list(items.values())}
     
