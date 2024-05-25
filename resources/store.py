@@ -8,8 +8,8 @@ blp = Blueprint("stores", __name__, description="Operations on stores")
 
 @blp.route("/store/<string:store_id>")
 class Store(MethodView):
-    def get(self):
+    def get(self, store_id):
         pass
 
-    def delete(self):
+    def delete(self, store_id):
         pass
