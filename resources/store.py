@@ -15,4 +15,8 @@ class Store(MethodView):
             abort(404, message="Store not found")
 
     def delete(self, store_id):
-        pass
+        try:
+            del stores[store_id]
+            return {"message": "Store deleted"}
+        except KeyError:
+            abort(404, message="Store not found")
