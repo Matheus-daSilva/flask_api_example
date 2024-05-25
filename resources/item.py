@@ -15,8 +15,12 @@ class Item(MethodView):
         except KeyError:
             abort(404, message="Store not found")
 
-    def delete():
-        pass
+    def delete(self, item_id):
+        try:
+            del items[item_id]
+            return {"message": "Item deleted"}
+        except KeyError:
+            abort(404, message="Item not found.")
 
     def put():
         pass
