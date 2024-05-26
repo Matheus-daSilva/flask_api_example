@@ -25,11 +25,8 @@ class Item(MethodView):
         except KeyError:
             abort(404, message="Item not found.")
 
-    def put(self, item_id):
-        item_data = request.get_json()
-        if "price" not in item_data or "name" not in item_data:
-            abort(400, message="Bad request. Ensure 'price' or 'name' are included in the JSON payload")
-
+    @blp.arguments(ItemUpdateSchema)
+    def put(self, item_data, item_id):
         try:
             item = items[item_id]
             item.update(item_data)
@@ -44,8 +41,7 @@ class ItemList(MethodView):
         return {"items": list(items.values())}
     
     @blp.arguments(ItemSchema)
-    def post(self):
-        item_data = request.get_json()
+    def post(self, item_data):
         for item in items.values():
             if (
                 item_data["name"] == item["name"]
