@@ -1,7 +1,7 @@
 from flask import request
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
 from db import db
 from models import StoreModel
@@ -41,6 +41,11 @@ class StoreList(MethodView):
         try: 
             db.session.add(store)
             db.session.commit()
+        except IntegrityError:
+            abort(
+                400,
+                message="A store with that name already exists."
+            )
         except SQLAlchemyError:
             abort(500, message= "An error occured while inserting the item")
 
