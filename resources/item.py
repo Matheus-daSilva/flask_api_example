@@ -1,4 +1,3 @@
-from flask import request
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from sqlalchemy.exc import SQLAlchemyError
@@ -12,6 +11,7 @@ blp = Blueprint("Items", __name__, description="Operations on items")
 
 @blp.route("/item/<string:item_id>")
 class Item(MethodView):
+    @blp.response(200, ItemSchema)
     def get(self, item_id):
         item = ItemModel.query.get_or_404(item_id)
         return item
@@ -23,9 +23,15 @@ class Item(MethodView):
     @blp.arguments(ItemUpdateSchema)
     @blp.response(200, ItemSchema)
     def put(self, item_data, item_id):
-        item = ItemModel.query.get_or_404(item_id)
-        raise NotImplementedError("Updating an item is not implemented")
-
+        item = ItemModel.query.get(item_id)
+        if item:
+            item.price = item_data["price"]
+            item.name = item_data["name"]
+        else:
+            ItemModel(**item_data)
+        
+        db.session.add(item)
+        db.session.commit()
 
 @blp.route("/item")
 class ItemList(MethodView):
