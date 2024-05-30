@@ -33,6 +33,8 @@ class Item(MethodView):
         db.session.add(item)
         db.session.commit()
 
+        return item
+
 @blp.route("/item")
 class ItemList(MethodView):
     @blp.response(200, ItemSchema(many=True))
