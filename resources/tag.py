@@ -10,7 +10,7 @@ blp = Blueprint("Tags", "tags", description="Operations on tags")
 
 @blp.route("/store/<string:store_id>/tag")
 class TagInStore(MethodView):
-    @blp.responser(200, TagSchema(many=True))
+    @blp.response(200, TagSchema(many=True))
     def get(self, store_id):
         store = StoreModel.query.get_or_404(store_id)
 
@@ -36,3 +36,11 @@ class TagInStore(MethodView):
             )
 
         return tag
+    
+    @blp.route("/tag/<string:tag_id>")
+    class Tag(MethodView):
+        @blp.response(200, TagSchema)
+        def get(self, tag_id):
+            tag = TagModel.query.get_or_404(tag_id)
+            
+            return tag
