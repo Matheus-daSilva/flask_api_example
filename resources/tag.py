@@ -3,8 +3,8 @@ from flask_smorest import Blueprint, abort
 from sqlalchemy.exc import SQLAlchemyError
 
 from db import db
-from models import TagModel, StoreModel
-from schemas import TagSchema
+from models import TagModel, StoreModel, ItemModel
+from schemas import TagSchema, TagAndItemSchema
 
 blp = Blueprint("Tags", "tags", description="Operations on tags")
 
@@ -37,10 +37,10 @@ class TagInStore(MethodView):
 
         return tag
     
-    @blp.route("/tag/<string:tag_id>")
-    class Tag(MethodView):
-        @blp.response(200, TagSchema)
-        def get(self, tag_id):
-            tag = TagModel.query.get_or_404(tag_id)
+@blp.route("/tag/<string:tag_id>")
+class Tag(MethodView):
+    @blp.response(200, TagSchema)
+    def get(self, tag_id):
+        tag = TagModel.query.get_or_404(tag_id)
             
-            return tag
+        return tag
