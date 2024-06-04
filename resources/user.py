@@ -34,3 +34,10 @@ class User(MethodView):
         user = UserModel.query.get_or_404(user_id)
 
         return user
+    
+    def delete(self, user_id):
+        user = UserModel.query.get_or_404(user_id)
+        db.session.delete(user)
+        db.session.commit()
+
+        return {"message": "User deleted"}, 200
