@@ -7,10 +7,10 @@ from db import db
 from models import UserModel
 from schemas import UserSchema
 
-blp = Blueprint("Users", "users", operations="Operations on user")
+blp = Blueprint("Users", "users", description="Operations on user")
 
 
-@blp.rout("/register")
+@blp.route("/register")
 class UserRegister(MethodView):
     @blp.arguments(UserSchema)
     def post(self, user_data):
@@ -27,7 +27,7 @@ class UserRegister(MethodView):
         return {"message": "User created successfully."}, 201
 
 
-@blp.rout("/user/<int:user_id>")
+@blp.route("/user/<int:user_id>")
 class User(MethodView):
     @blp.response(200, UserSchema)
     def get(self, user_id):
