@@ -1,7 +1,7 @@
 import secrets
 
 import os
-from flask import Flask
+from flask import Flask, jsonify
 from flask_smorest import Api
 from flask_jwt_extended import JWTManager
 
@@ -25,12 +25,43 @@ def create_app(db_url=None):
     app.config["OPENAPI_SWAGGER_UI_URL"] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
     app.config["SQLALCHEMY_DATABASE_URI"] = db_url or os.getenv("DATABASE_URL", "sqlite:///data.db")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    app.config["JWT_SECRET_KEY"] = secrets.SystemRandom().getrandbits(128)
+    app.config["JWT_SECRET_KEY"] = "matheus"
     db.init_app(app)
 
     api = Api(app)
 
     jwt = JWTManager(app)
+
+    @jwt.expired_token_loader
+    def expired_token_callback(jwt_header, jwt_payload):
+        return (
+            jsonify(
+                {"message": "The token has expired.", "error": "Token expired."}
+            ),
+            401,
+        )
+    
+    @jwt.unauthorized_loader
+    def invalid_token_callback(error):
+        return (
+            jsonify(
+                {"message": "Signature verification failed.", "error": "Invalid expired."}
+            ),
+            401,
+        )
+    
+    @jwt.unauthorized_loader
+    def missing_token_callback(error):
+        return (
+            jsonify(
+                {
+                    "description": "Request does not contain an acess token.", 
+                    "error": "Authorization required.."
+                
+                }
+            ),
+            401,
+        )
 
     with app.app_context():
         db.create_all()
