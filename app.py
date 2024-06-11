@@ -6,7 +6,7 @@ from flask_smorest import Api
 from flask_jwt_extended import JWTManager
 
 from db import db
-from blocklist import BLOCKLIST
+from models import UserAuth
 
 from resources.item import blp as ItemBlueprint
 from resources.store import blp as StoreBlueprint
@@ -35,7 +35,10 @@ def create_app(db_url=None):
 
     @jwt.token_in_blocklist_loader
     def check_if_token_in_blocklist(jwt_header, jwt_payload):
-        return jwt_payload["jti"] in BLOCKLIST
+        token = UserAuth.query.filter(
+            UserAuth.token == jwt_payload["jti"]
+            ).first()
+        return token
 
     @jwt.expired_token_loader
     def expired_token_callback(jwt_header, jwt_payload):
@@ -52,6 +55,18 @@ def create_app(db_url=None):
             jsonify(
                 {"description": "The token has been revoked.", "error": "Token revoked."}
             )
+        )
+    
+    @jwt.needs_fresh_token_loader
+    def token_not_fresh_callback(jwt_header, jwt_payload):
+        return (
+            jsonify(
+                {
+                    "description": "The token is not fresh.",
+                    "error": "fresh_token_required",
+                }
+            ),
+            401,
         )
 
     @jwt.unauthorized_loader
