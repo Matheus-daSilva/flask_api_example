@@ -1,4 +1,4 @@
-import secrets
+from dotenv import load_dotenv
 
 import os
 from flask import Flask, jsonify
@@ -13,6 +13,8 @@ from resources.item import blp as ItemBlueprint
 from resources.store import blp as StoreBlueprint
 from resources.tag import blp as TagBlueprint
 from resources.user import blp as UserBlueprint
+
+load_dotenv()
 
 
 def create_app(db_url=None):
