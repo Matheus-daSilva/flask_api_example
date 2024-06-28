@@ -1,3 +1,4 @@
+from flask import current_app
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from flask_jwt_extended import jwt_required, get_jwt, create_access_token, create_refresh_token, get_jwt_identity
@@ -6,6 +7,7 @@ from passlib.hash import pbkdf2_sha256
 from db import db
 from models import UserModel, UserAuth
 from schemas import UserSchema
+from resources.tasks import  send_user_registration_email
 
 blp = Blueprint("Users", "users", description="Operations on user")
 
@@ -19,10 +21,15 @@ class UserRegister(MethodView):
         
         user = UserModel(
             username=user_data["username"],
+            email=user_data["email"],
             password=pbkdf2_sha256.hash(user_data["password"])
         )
         db.session.add(user)
         db.session.commit()
+
+        print("aqui")
+
+        current_app.queue.enqueue(send_user_registration_email, user.email, user.username)
 
         return {"message": "User created successfully."}, 201
 
